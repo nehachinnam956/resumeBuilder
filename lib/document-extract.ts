@@ -45,7 +45,13 @@ function detectLayoutWarnings(text: string): string[] {
 
 async function extractPdfText(buffer: Buffer): Promise<string> {
   const { PDFParse } = await import("pdf-parse");
-  const parser = new PDFParse({ data: buffer });
+  const { CanvasFactory } = await import("pdf-parse/worker");
+
+  const parser = new PDFParse({
+    data: new Uint8Array(buffer),
+    CanvasFactory,
+  });
+
   try {
     const result = await parser.getText();
     return result.text ?? "";
